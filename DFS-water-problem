@@ -1,0 +1,41 @@
+
+def dfs():
+    cap1, cap2 = 4, 3
+    target = 2
+
+    stack = [((0, 0), [(0, 0)])]
+    visited = set()
+
+    while stack:
+        (x, y), path = stack.pop()
+
+        if (x, y) in visited:
+            continue
+        visited.add((x, y))
+
+        if x == target:
+            print("Solution found:")
+            for state in path:
+                print(state)
+            return
+
+        a = min(x, cap2 - y)
+        b = min(y, cap1 - x)
+
+        next_states = [
+            (cap1, y),
+            (x, cap2),
+            (0, y),
+            (x, 0),
+            (x - a, y + a),
+            (x + b, y - b)
+        ]
+
+        for state in next_states:
+            if state not in visited:
+                stack.append((state, path + [state]))
+
+    print("No solution found")
+
+
+dfs()
