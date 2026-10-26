@@ -1,0 +1,67 @@
+
+class ModelBasedAgent:
+    def __init__(self, grid, start, goal):
+        self.grid = grid
+        self.position = start
+        self.goal = goal
+
+        # Internal state representation
+        self.internal_state = {
+            "position": start,
+            "visited": set(),
+            "obstacles": set()
+        }
+
+    def get_action(self):
+        x, y = self.position
+        self.internal_state["visited"].add(self.position)
+
+        if self.position == self.goal:
+            return "Goal Reached!"
+
+        # Possible movements: Up, Down, Left, Right
+        moves = [
+            (-1, 0, "Up"),
+            (1, 0, "Down"),
+            (0, -1, "Left"),
+            (0, 1, "Right")
+        ]
+
+        for dx, dy, action in moves:
+            nx, ny = x + dx, y + dy
+
+            # Check grid boundaries
+            if (0 <= nx < len(self.grid) and
+                0 <= ny < len(self.grid[0])):
+
+                # Avoid obstacles and visited cells
+                if (self.grid[nx][ny] != 1 and
+                    (nx, ny) not in self.internal_state["visited"]):
+
+                    self.position = (nx, ny)
+                    self.internal_state["position"] = self.position
+                    return action
+
+        return "No safe move available"
+
+
+# 0 = Free cell, 1 = Obstacle
+grid = [
+    [0, 0, 1, 0],
+    [1, 0, 1, 0],
+    [0, 0, 0, 0],
+    [0, 1, 1, 0]
+]
+
+agent = ModelBasedAgent(grid, (0, 0), (3, 3))
+
+while agent.position != agent.goal:
+    action = agent.get_action()
+    print("Action:", action)
+    print("Current Position:", agent.position)
+
+    if action == "No safe move available":
+        break
+
+if agent.position == agent.goal:
+    print("Goal Reached Successfully!")
